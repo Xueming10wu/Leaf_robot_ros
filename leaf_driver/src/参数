@@ -1,0 +1,8 @@
+    MCP->expectStepMotorList[0].position += 0;          //-7800  90°
+    MCP->expectStepMotorList[1].position += 0;          //-6350 90°
+    MCP->expectStepMotorList[2].position += 0;          //-8000 90°
+    MCP->expectStepMotorList[3].position += 0;          //-4550  90
+    MCP->expectStepMotorList[4].position += 0;          //-3400  90
+    MCP->expectStepMotorList[5].position += 3200;       //-3200 90
+
+

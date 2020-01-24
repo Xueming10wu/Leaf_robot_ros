@@ -1,0 +1,15 @@
+        <visual>
+          <origin xyz="0.0795 -0.028 0.01" rpy="0 0 3.1415926" />
+            <geometry>
+                <mesh filename="package://leaf_description/meshes/link4.STL" />
+            </geometry>
+            <material name="gray">
+                <color rgba="0.75 0.75 0 1"/>
+            </material>
+        </visual>
+        <collision>
+          <origin xyz="0.0795 -0.028 0.01" rpy="0 0 3.1415926" />
+            <geometry>
+                <mesh filename="package://leaf_description/meshes/link4.STL" />
+            </geometry>
+        </collision>

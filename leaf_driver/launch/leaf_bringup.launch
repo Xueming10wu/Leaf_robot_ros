@@ -1,0 +1,11 @@
+<launch>
+    <!--tf不能忘-->
+    <include file="$(find leaf_description)/launch/leaf_description.launch"/>
+    
+    <!--硬件嵌入-->
+    <!--<include file="$(find leaf_driver)/launch/leaf_hardware.launch"/>-->
+    
+    <!--moveit配置-->
+    <include file="$(find leaf_driver)/launch/load_config.launch"/>
+
+</launch>
