@@ -78,8 +78,8 @@ LeafRobot::LeafRobot(string name) : as_(nh_, name, boost::bind(&LeafRobot::execu
     usleep(100000);
     manipulatorProtocolPtr->udpHandle->serialPort->flush ();
     //到达0点
-    home();
-    write();
+    //zero();
+    //write();
     cout << "机械臂到达零点位置..." <<endl;
     usleep(1000000);
     cout << "机械臂到达零点位置完毕，服务端启动中" <<endl;
@@ -192,8 +192,6 @@ void LeafRobot::timerCallback(const ros::TimerEvent& e)
     {
         return;
     }
-
-
 }
 
 
@@ -271,7 +269,7 @@ void LeafRobot::trackMove()
     
     }
     ROS_INFO("LeafRobot: Now , Let's go !");
-    for ( size_t tolerance = 0 ; !isArrived() && tolerance < wayPoints.size() * 2; tolerance ++ )
+    for ( size_t seq = 0 ; !isArrived() && seq < wayPoints.size() * 10; seq ++ )
     {//轨迹开始运动如果没有到达终点, 最多等5s
         feedback_.actual.positions.clear();
         for (size_t i = 0; i < joint_count; i++)
@@ -282,6 +280,20 @@ void LeafRobot::trackMove()
         as_.publishFeedback(feedback_);
         usleep(100000);     //10hz速率进行反馈
     }
+    
+    for(size_t tolerance = 0 ; !isArrived() && tolerance < 100; tolerance ++)
+    {//最后进行结束点的是否到达的检查
+        write();
+        feedback_.actual.positions.clear();
+        for (size_t i = 0; i < joint_count; i++)
+        {//当前点
+            feedback_.actual.positions.push_back((manipulatorProtocolPtr->readManipulator.stepMotorList[i].position - zeroPlu[i]) * PI / (2 * plu2angel[i]));
+        }
+        feedback_.header.stamp = ros::Time::now();
+        as_.publishFeedback(feedback_);
+        usleep(100000);     //10hz速率进行反馈
+    }
+
     ROS_INFO("LeafRobot: Done !");
     wayPoints.clear();
 }
