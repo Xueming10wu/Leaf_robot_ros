@@ -269,19 +269,6 @@ void LeafRobot::trackMove()
     
     }
     ROS_INFO("LeafRobot: Now , Let's go !");
-    for ( size_t seq = 0 ; !isArrived() && seq < wayPoints.size() * 3 ; seq ++ )
-    {//轨迹开始运动如果没有到达终点, 最多等5s
-        feedback_.actual.positions.clear();
-        for (size_t i = 0; i < joint_count; i++)
-        {//当前点
-            //feedback_.actual.positions.push_back((manipulatorProtocolPtr->readManipulator.stepMotorList[i].position - zeroPlu[i]) * PI / (2 * plu2angel[i]));
-            feedback_.actual.positions.push_back(msg.position[i]);
-        }
-        //feedback_.header.stamp = ros::Time::now();
-        feedback_.header.stamp = msg.header.stamp;
-        as_.publishFeedback(feedback_);
-        usleep(100000);     //10hz速率进行反馈
-    }
     usleep(1000000);
     while (isMoving())
     {//等待机械臂运动停止
