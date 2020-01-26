@@ -30,6 +30,9 @@ public:
     //某个路点已经到达
     bool isArrived();
 
+    //机械臂当前还处于运动状态
+    bool isMoving();
+
     //关节状态更新
     void jointStateUpdate();
 
@@ -59,6 +62,7 @@ private:
     //关节状态发布
     ros::Publisher joint_pub_;
     sensor_msgs::JointState msg;
+    sensor_msgs::JointState msg_pre;
     
     //串口
     string serialport_name;

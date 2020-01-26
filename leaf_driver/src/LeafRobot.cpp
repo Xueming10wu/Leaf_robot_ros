@@ -256,7 +256,7 @@ void LeafRobot::trackMove()
     
     for (size_t seq = 0; seq < wayPoints.size(); seq ++)
     {
-        cout << "Push " << seq << "th point : \n";
+        //cout << "Push " << seq << "th point : \n";
         for (size_t i = 0; i < joint_count; i++)
         {//需要到达的点
             //feedback_.desired.positions.push_back(wayPoints[seq].positions[i]);
@@ -269,31 +269,49 @@ void LeafRobot::trackMove()
     
     }
     ROS_INFO("LeafRobot: Now , Let's go !");
-    for ( size_t seq = 0 ; !isArrived() && seq < wayPoints.size() * 10; seq ++ )
+    for ( size_t seq = 0 ; !isArrived() && seq < wayPoints.size() * 3 ; seq ++ )
     {//轨迹开始运动如果没有到达终点, 最多等5s
         feedback_.actual.positions.clear();
         for (size_t i = 0; i < joint_count; i++)
         {//当前点
-            feedback_.actual.positions.push_back((manipulatorProtocolPtr->readManipulator.stepMotorList[i].position - zeroPlu[i]) * PI / (2 * plu2angel[i]));
+            //feedback_.actual.positions.push_back((manipulatorProtocolPtr->readManipulator.stepMotorList[i].position - zeroPlu[i]) * PI / (2 * plu2angel[i]));
+            feedback_.actual.positions.push_back(msg.position[i]);
         }
-        feedback_.header.stamp = ros::Time::now();
+        //feedback_.header.stamp = ros::Time::now();
+        feedback_.header.stamp = msg.header.stamp;
         as_.publishFeedback(feedback_);
         usleep(100000);     //10hz速率进行反馈
     }
-    
-    for(size_t tolerance = 0 ; !isArrived() && tolerance < 100; tolerance ++)
-    {//最后进行结束点的是否到达的检查
-        write();
+    usleep(1000000);
+    while (isMoving())
+    {//等待机械臂运动停止
         feedback_.actual.positions.clear();
         for (size_t i = 0; i < joint_count; i++)
         {//当前点
-            feedback_.actual.positions.push_back((manipulatorProtocolPtr->readManipulator.stepMotorList[i].position - zeroPlu[i]) * PI / (2 * plu2angel[i]));
+            feedback_.actual.positions.push_back(msg.position[i]);
         }
-        feedback_.header.stamp = ros::Time::now();
+        feedback_.header.stamp = msg.header.stamp;
         as_.publishFeedback(feedback_);
         usleep(100000);     //10hz速率进行反馈
     }
 
+    ROS_INFO("stop Moving");
+    for( size_t tolerance = 0 ; !isArrived() && tolerance < 20 ; tolerance ++)
+    {
+        if (!isMoving() && tolerance % 5 == 0)
+        { //机械臂停了，如果没有到达最终点，那就再写一遍
+            ROS_WARN("LeafRbot : write finish goal, it means data loss happend. ");
+            write();
+        }
+        feedback_.actual.positions.clear();
+        for (size_t i = 0; i < joint_count; i++)
+        {//当前点
+            feedback_.actual.positions.push_back(msg.position[i]);
+        }
+        feedback_.header.stamp = msg.header.stamp;
+        as_.publishFeedback(feedback_);
+        usleep(100000);     //10hz速率进行反馈
+    }
     ROS_INFO("LeafRobot: Done !");
     wayPoints.clear();
 }
@@ -312,9 +330,19 @@ bool LeafRobot::isArrived()
     return true;
 }
 
+bool LeafRobot::isMoving()
+{
+    if ( msg_pre.position == msg.position )
+    {
+        return false;
+    }
+    return true;
+}
+
 
 void LeafRobot::jointStateUpdate()
 {
+    msg_pre = msg;
     //cout << "jointStateUpdate\n";
     for (size_t i = 0; i < manipulatorProtocolPtr->readManipulator.degrees ; i ++)
     {//获取到数据 写入到pos中
