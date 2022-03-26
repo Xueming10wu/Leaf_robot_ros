@@ -5,8 +5,8 @@
   <arg name="baudrate" default="115200" /><!--波特率-->
 
 
-  <!--<node ns="/leaf" pkg="leaf_driver" type="main" name="leaf_driver_node" respawn="false" output="screen">-->
-  <node ns="/leaf" pkg="leaf_driver" type="main" name="leaf_driver_node" respawn="false">
+  <node ns="/leaf" pkg="leaf_driver" type="main" name="leaf_driver_node" respawn="false" output="screen">
+  <!--<node ns="/leaf" pkg="leaf_driver" type="main" name="leaf_driver_node" respawn="false">-->
     <param name="serialport_name" type="string" value="$(arg serialport_name)"/>
     <param name="baudrate" type="int" value="$(arg baudrate)"/>
   </node>
