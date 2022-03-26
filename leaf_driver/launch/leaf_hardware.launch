@@ -2,7 +2,7 @@
 <launch>
   <!-- Leaf -->
   <arg name="serialport_name" default="/dev/ttyACM0" /><!--串口名-->
-  <arg name="baudrate" default="230400" /><!--波特率-->
+  <arg name="baudrate" default="115200" /><!--波特率-->
 
 
   <!--<node ns="/leaf" pkg="leaf_driver" type="main" name="leaf_driver_node" respawn="false" output="screen">-->
