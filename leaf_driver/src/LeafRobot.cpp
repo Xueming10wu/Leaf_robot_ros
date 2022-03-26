@@ -7,7 +7,7 @@ LeafRobot::LeafRobot(string name) : as_(nh_, name, boost::bind(&LeafRobot::execu
     //私有参数 获取
     ros::NodeHandle nh_private("~");
     nh_private.param<string>("serialport_name", serialport_name, "/dev/ttyACM0");
-    nh_private.param<int>("baudrate", baudrate, 230400);
+    nh_private.param<int>("baudrate", baudrate, 115200);
     clock = 0.025;
 
     cout << "串口名 : " << serialport_name << "  , 波特率 : " << baudrate << endl;
